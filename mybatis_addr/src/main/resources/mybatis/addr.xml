@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.model.AddrMapper"> 
+
+	<delete id="delete" parameterType="int">
+		delete from address
+		where addressnum = #{addressnum}
+	</delete>
+
+	<update id="update" parameterType="com.study.model.AddrDTO">
+		UPDATE address
+		SET name = #{name},
+		handphone = #{handphone},
+		zipcode = #{zipcode},
+		address = #{address},
+		address2 = #{address2}
+		WHERE addressnum = #{addressnum}
+	</update>
+
+	<select id="read" parameterType="int" resultType="com.study.model.AddrDTO">
+		SELECT addressnum, name, handphone, address, zipcode, address2
+		FROM address
+		WHERE addressnum = #{addressnum}
+	</select>
+
+	<insert id="create" parameterType="com.study.model.AddrDTO">
+		INSERT INTO address(name, handphone, address, zipcode, address2)
+		VALUES(#{name},#{handphone},#{address},#{zipcode},#{address2})
+	</insert>
+
+	<select id="total" parameterType="Map" resultType="int">
+		SELECT count(*) from address
+		<where>
+			<choose>
+				<when test="col=='name'">
+					name like concat('%',#{word},'%')
+				</when>
+				<when test="col=='handphone'">
+					handphone like concat('%',#{word},'%')
+				</when>
+				<when test="col=='name_handphone'">
+					name like concat('%', #{word} ,'%')
+					or
+					handphone like concat('%', #{word} ,'%')
+				</when>
+			</choose>
+		</where>
+	</select>
+
+	<select id="list" parameterType="Map" resultType="com.study.model.AddrDTO">
+		SELECT addressnum,name,handphone,zipcode,address
+		FROM address
+		<where>
+			<choose>
+				<when test="col=='name'">
+					name like concat('%',#{word},'%')
+				</when>
+				<when test="col=='handphone'">
+					handphone like concat('%',#{word},'%')
+				</when>
+				<when test="col=='name_handphone'">
+					name like concat('%',#{word},'%')
+					or
+					handphone like concat('%',#{word},'%')
+				</when>
+			</choose>
+		</where>
+		ORDER BY addressnum DESC limit #{sno},#{eno}
+	</select>
+</mapper>
